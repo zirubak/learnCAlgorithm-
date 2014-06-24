@@ -40,6 +40,25 @@ node *insert_after(int k, node *t)
 	return s;
 }
 
+
+// delete node
+int delete_next(node *t)
+{
+	node *s;
+
+	if (t->next == tail)
+	{
+		return 0;
+	}
+
+	s = t->next;
+	t->next = t->next->next;
+	free(s);
+
+	return 1;
+}
+
+
 int main(void)
 {
 
