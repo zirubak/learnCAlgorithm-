@@ -58,6 +58,46 @@ int delete_next(node *t)
 	return 1;
 }
 
+//find node
+node *find_node(int k)
+{
+	node *s;
+
+	s = head->next; // head->next is first node of the list.
+	while(s->key != k && s != tail)
+		s = s->next;
+	return s;
+}
+
+// after finding value if the value is existed delete the node
+int delete_node(int k)
+{
+	node *s; // node for searching
+	node *p; // previous node of s
+
+	p = head;
+	s = p->next;
+
+	while(s->key != k && s != tail)
+	{
+		p = p->next;
+		s = p->next;
+	}
+
+	if(s != tail)
+	{
+		p->next = s->next;
+		free(s);
+		return 1;
+	}
+	else
+	{
+		return 0;
+	}
+}
+
+
+
 
 int main(void)
 {
