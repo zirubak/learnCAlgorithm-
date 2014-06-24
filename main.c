@@ -28,6 +28,18 @@ void init_list(void)
 }
 
 
+// t is previous node.
+node *insert_after(int k, node *t)
+{
+	node *s;
+	s = (node*)malloc(sizeof(node*));
+	s->key = k;
+	s->next = t->next;
+	t->next = s;
+
+	return s;
+}
+
 int main(void)
 {
 
