@@ -43,6 +43,7 @@ node *ordered_insert(int k)
 	return r;
 }
 
+// print list
 void print_list(node *t)
 {
 	printf("\n");
@@ -51,15 +52,15 @@ void print_list(node *t)
 		printf("%-8d", t->key);
 		t = t->next;
 	}
+
 }
 
 int main(void)
 {
+
 	node *t;
 
 	init_list();
-
-//	순서를 유지하면서 삽입
 	ordered_insert(10);
 	ordered_insert(5);
 	ordered_insert(8);
@@ -70,10 +71,6 @@ int main(void)
 
 	printf("\nInitial Linked list is ");
 	print_list(head->next);
-
-
-
-
 
 	return 0;
 }
