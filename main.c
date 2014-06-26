@@ -107,6 +107,5 @@ int main(void)
 	insert_after(9, t);
 	print_list(head->next);
 
-
 	return 0;
 }
