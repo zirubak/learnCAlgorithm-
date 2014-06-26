@@ -56,6 +56,19 @@ void print_list(node *t)
 
 }
 
+node *find_node(int k)
+{
+	node *s;
+	s = head->next; //head 부터 검색을 해야 하니 처음 node를 세팅해 주어야 함
+	while( s->key != k && s != tail)
+	{
+		s = s->next;
+	}
+
+	return s;
+}
+
+
 int main(void)
 {
 
@@ -72,6 +85,13 @@ int main(void)
 
 	printf("\nInitial Linked list is ");
 	print_list(head->next);
+	printf("\n");
+
+	t = find_node(5);
+	printf("\nFinding 5 is %ssuccessful", t == tail ? "un" : "");
+
+	t = find_node(0);
+	printf("\nFinding 0 is %ssuccessful", t == tail ? "un" : "");
 
 	return 0;
 }
