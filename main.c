@@ -78,6 +78,85 @@ node *insert_after(int k, node *t)
 	return s;
 }
 
+int delete_next(node *t)
+{
+	node *s;
+	if( t->next == tail)
+		return 0;	//꼬리는 지울 수가 없다
+	s = t->next;
+	t->next = t->next->next;
+	free(s);
+	return 1;
+}
+
+node *insert_node(int t, int k) // before k, insert t
+{
+	node *s;
+	node *p;
+	node *r;
+
+	p = head;
+	s = p->next;
+
+	while(s->key !=k && s != tail)
+	{
+		p = p->next;
+		s = p->next;
+	}
+
+	if(s != tail) // if find
+	{
+		r = (node*)malloc(sizeof(node));
+		r->key = t;
+		p->next = r;
+		r->next = s;
+	}
+
+	return p->next;
+}
+
+int delet_node(int t)
+{
+	node *s;
+	node *p;
+
+	p = head;
+	s = p->next;
+
+	while( s->key != t && s != tail)
+	{
+		p = p->next;
+		s = s->next;
+	}
+
+	if(s != tail) //if find
+	{
+		p->next = s->next;
+		free(s);
+		return 1;
+	}
+	else
+	{
+		return 0;
+	}
+}
+
+node *delete_all(void)
+{
+	node *s;
+	node *t;
+
+	t = head->next;
+	while( t != tail)
+	{
+		s = t;
+		t = t->next;
+		free(s);
+	}
+	head->next = tail;
+	return head;
+}
+
 int main(void)
 {
 
@@ -107,6 +186,32 @@ int main(void)
 	insert_after(9, t);
 	print_list(head->next);
 
+	t = find_node(10);
+	printf("\nDeleting next last node.");
+	delete_next(t);
+	print_list(head->next);	//10의 뒤는 tail이라서 지울 수가 없다. return 0 함
+
+	t = find_node(3);
+	printf("\nDeleting next 3.");
+	delete_next(t);
+	print_list(head->next);
+
+	printf("\nInsert node 2 before 3");
+	insert_node(2,3);
+	print_list(head->next);
+
+	printf("\nDeleting node 2");
+	if(!delet_node(2))
+		printf("\n deleting 2 is unsuccessful");
+	print_list(head->next);
+
+	printf("\nDeleting node 1");
+	delet_node(1);
+	print_list(head->next);
+
+	printf("\nDeleting all node.");
+	delete_all();
+	print_list(head->next);
 
 	return 0;
 }
