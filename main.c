@@ -1,217 +1,105 @@
-// simple linked list example
-// page 136
-
+//배열로 구현하는 스택
+// stack using array
 
 #include <stdio.h>
 
-typedef struct _node{
-	int key;
-	struct _node *next;
-} node;
+#define MAX 10
 
-//to init linked list
-node *head, *tail; //define by global variable
+int top;
+int stack[MAX];
 
-void init_list(void)
+void init_stack(void)
 {
-	head = (node*)malloc(sizeof(node));
-	tail = (node*)malloc(sizeof(node));
-
-	head->next = tail;
-	tail->next = tail;
+	top = -1;
 }
 
-node *ordered_insert(int k)
+int push(int t)
 {
-	node *s;  //현재의 node
-	node *p;  //이전의 node
-	node *r;  //삽입되는 node
-
-	p = head;
-	s = p->next;
-
-	while(s->key <= k && s != tail)
+	if(top >= MAX -1) // MAX -1 임을 잘 기억하자
 	{
-		p = p->next;
-		s = s->next;
+		printf("\n Stack overflow\n");
+		return -1;
 	}
 
-	r = (node*)malloc(sizeof(node));
-	r->key = k;
-	p->next = r;
-	r->next = s;
+	stack[++top] = t;	//++top 임을 잘 기억하자
 
-	return r;
+	return t;
 }
 
-// print list
-void print_list(node *t)
+int pop(void)
 {
-	printf("\n");
-	while(t != tail)
+	if(top < 0)
 	{
-		printf("%-8d", t->key);
-		t = t->next;
+		printf("\n Stack underflow\n");
+		return -1;
 	}
 
+	return stack[top--];
 }
 
-node *find_node(int k)
+void print_stack(void)
 {
-	node *s;
-	s = head->next; //head 부터 검색을 해야 하니 처음 node를 세팅해 주어야 함
-	while( s->key != k && s != tail)
-	{
-		s = s->next;
-	}
+	int i;
 
-	return s;
+	printf("\n Stack contents : Top --> Bottom\n");
+	for(i = top; i >= 0; i--)
+		printf("%-6d",stack[i]);
 }
 
-node *insert_after(int k, node *t)
-{
-	node *s;
-	s = (node*)malloc(sizeof(node*));
-	s->key = k;
-	s->next = t->next;
-	t->next = s;
-	return s;
-}
-
-int delete_next(node *t)
-{
-	node *s;
-	if( t->next == tail)
-		return 0;	//꼬리는 지울 수가 없다
-	s = t->next;
-	t->next = t->next->next;
-	free(s);
-	return 1;
-}
-
-node *insert_node(int t, int k) // before k, insert t
-{
-	node *s;
-	node *p;
-	node *r;
-
-	p = head;
-	s = p->next;
-
-	while(s->key !=k && s != tail)
-	{
-		p = p->next;
-		s = p->next;
-	}
-
-	if(s != tail) // if find
-	{
-		r = (node*)malloc(sizeof(node));
-		r->key = t;
-		p->next = r;
-		r->next = s;
-	}
-
-	return p->next;
-}
-
-int delet_node(int t)
-{
-	node *s;
-	node *p;
-
-	p = head;
-	s = p->next;
-
-	while( s->key != t && s != tail)
-	{
-		p = p->next;
-		s = s->next;
-	}
-
-	if(s != tail) //if find
-	{
-		p->next = s->next;
-		free(s);
-		return 1;
-	}
-	else
-	{
-		return 0;
-	}
-}
-
-node *delete_all(void)
-{
-	node *s;
-	node *t;
-
-	t = head->next;
-	while( t != tail)
-	{
-		s = t;
-		t = t->next;
-		free(s);
-	}
-	head->next = tail;
-	return head;
-}
 
 int main(void)
 {
+	int i;
 
-	node *t;
+	init_stack();
 
-	init_list();
+	printf("\nPush 5,4,7,8,2,1");
+	push(5);
+	push(4);
+	push(7);
+	push(8);
+	push(2);
+	push(1);
+	print_stack();
 
-	ordered_insert(10);
-	ordered_insert(5);
-	ordered_insert(8);
-	ordered_insert(3);
-	ordered_insert(1);
-	ordered_insert(7);
-	ordered_insert(8);
+	printf("\nPop");
+	i = pop();
+	print_stack();
+	printf("\n Popping value is %d", i);
 
-	printf("\nInitial Linked list is ");
-	print_list(head->next);
-	printf("\n");
+	printf("\nPush 3,2,5,7,2");
+	push(3);
+	push(2);
+	push(5);
+	push(7);
+	push(2);
+	print_stack();
 
-	t = find_node(5);
-	printf("\nFinding 5 is %ssuccessful", t == tail ? "un" : "");
+	printf("\nNow stack is full, push 3");
+	push(3); // show overflow error
+	print_stack();
 
-//	t = find_node(0);
-//	printf("\nFinding 0 is %ssuccessful", t == tail ? "un" : "");
+	printf("\nInitialize stack");
+	init_stack();
+	print_stack();
 
-	printf("\nInserting 9 after 5");
-	insert_after(9, t);
-	print_list(head->next);
-
-	t = find_node(10);
-	printf("\nDeleting next last node.");
-	delete_next(t);
-	print_list(head->next);	//10의 뒤는 tail이라서 지울 수가 없다. return 0 함
-
-	t = find_node(3);
-	printf("\nDeleting next 3.");
-	delete_next(t);
-	print_list(head->next);
-
-	printf("\nInsert node 2 before 3");
-	insert_node(2,3);
-	print_list(head->next);
-
-	printf("\nDeleting node 2");
-	if(!delet_node(2))
-		printf("\n deleting 2 is unsuccessful");
-	print_list(head->next);
-
-	printf("\nDeleting node 1");
-	delet_node(1);
-	print_list(head->next);
-
-	printf("\nDeleting all node.");
-	delete_all();
-	print_list(head->next);
+	printf("\nNow stack is empty, pop.");
+	i = pop(); // show underflow error
+	print_stack();
+	printf("\n popping value is %d", i);
 
 	return 0;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
