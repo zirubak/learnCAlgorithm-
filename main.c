@@ -1,56 +1,89 @@
-//배열로 구현하는 스택
-// stack using array
+// Stack using Linked list
 
 #include <stdio.h>
 
-#define MAX 10
+typedef struct _node{
+	int key;
+	struct _node *next;
+} node;
 
-int top;
-int stack[MAX];
+node *head, *tail;
 
 void init_stack(void)
 {
-	top = -1;
+	head = (node*)malloc(sizeof(node));
+	tail = (node*)malloc(sizeof(node));
+	head->next = tail;
+	tail->next = tail;
 }
 
-int push(int t)
+void clear_stack(void)
 {
-	if(top >= MAX -1) // MAX -1 임을 잘 기억하자
+	node *s;	//temp node to delete it
+	node *t;
+	t = head->next;
+
+	while( t != tail)
 	{
-		printf("\n Stack overflow\n");
+		s = t;
+		t = t->next;
+		free(s);
+	}
+
+	head->next = tail;
+}
+
+int push(int k)
+{
+	node *t;
+	if((t = (node*)malloc(sizeof(node))) == NULL)
+	{
+		printf("\n  out of memory...");
 		return -1;
 	}
 
-	stack[++top] = t;	//++top 임을 잘 기억하자
-
-	return t;
+	t->key = k;
+	t->next = head->next;
+	head->next = t;
+	return k;
 }
+
 
 int pop(void)
 {
-	if(top < 0)
+	node *t;
+	int i;
+	t = head;
+
+	if(t->next == tail) // if empty
 	{
-		printf("\n Stack underflow\n");
+		printf("\n    Stack underflow.");
 		return -1;
 	}
 
-	return stack[top--];
+	t = head->next;
+	i = t->key;
+	head->next = t->next;
+	free(t);
+
+	return i;
 }
 
 void print_stack(void)
 {
-	int i;
-
-	printf("\n Stack contents : Top --> Bottom\n");
-	for(i = top; i >= 0; i--)
-		printf("%-6d",stack[i]);
+	node *t;
+	t = head->next;
+	printf("\n Stack contents : Top ---> Bottom\n");
+	while( t != tail)
+	{
+		printf("%-6d", t->key);
+		t = t->next;
+	}
 }
-
 
 int main(void)
 {
 	int i;
-
 	init_stack();
 
 	printf("\nPush 5,4,7,8,2,1");
@@ -65,7 +98,7 @@ int main(void)
 	printf("\nPop");
 	i = pop();
 	print_stack();
-	printf("\n Popping value is %d", i);
+	printf("\n  Popping value is %d", i);
 
 	printf("\nPush 3,2,5,7,2");
 	push(3);
@@ -75,21 +108,33 @@ int main(void)
 	push(2);
 	print_stack();
 
-	printf("\nNow stack is full, push 3");
-	push(3); // show overflow error
+	printf("\nPush 3");
+	push(3);
 	print_stack();
 
 	printf("\nInitialize stack");
-	init_stack();
+	clear_stack();
 	print_stack();
 
-	printf("\nNow stack is empty, pop.");
-	i = pop(); // show underflow error
+	printf("\nNow stack is empty, pop");
+	i = pop();
 	print_stack();
-	printf("\n popping value is %d", i);
+	printf("\n  popping value is %d", i);
 
 	return 0;
 }
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
