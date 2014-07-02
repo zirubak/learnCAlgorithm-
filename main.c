@@ -1,148 +1,96 @@
-// Stack using Linked list
+//Circular Queue using array
 
 #include <stdio.h>
 
-typedef struct _node{
-	int key;
-	struct _node *next;
-} node;
+#define MAX 10
 
-node *head, *tail;
+int queue[MAX];
+int front, rear;
 
-void init_stack(void)
+void int_queue(void)
 {
-	head = (node*)malloc(sizeof(node));
-	tail = (node*)malloc(sizeof(node));
-	head->next = tail;
-	tail->next = tail;
+	front = rear = 0;
 }
 
-void clear_stack(void)
+void clear_queue(void)
 {
-	node *s;	//temp node to delete it
-	node *t;
-	t = head->next;
-
-	while( t != tail)
-	{
-		s = t;
-		t = t->next;
-		free(s);
-	}
-
-	head->next = tail;
+	front = rear;
 }
 
-int push(int k)
+int put(int k)
 {
-	node *t;
-	if((t = (node*)malloc(sizeof(node))) == NULL)
+	if(((rear + 1) % MAX)==front) //큐가 꽉 찾는지 확인
 	{
-		printf("\n  out of memory...");
+		printf("\n Queue overflow.");
 		return -1;
 	}
 
-	t->key = k;
-	t->next = head->next;
-	head->next = t;
+	queue[rear] = k; //rear는 빈 공간을 가르키므로 바로 k를 저장
+	rear = ++rear % MAX; //rear를 다음으로
+	//rear의 다음이라는 표현한 것은 원형큐의 인덱스로서 만약에 배열의 경계에
+	//도달 했을 경우 % 연산을 통하여 다시 제일 앞이나 뒤로 돌아가야 하기 때문이다.
+
 	return k;
 }
 
-
-int pop(void)
+int get(void)
 {
-	node *t;
 	int i;
-	t = head;
-
-	if(t->next == tail) // if empty
+	if(front == rear) // 큐가 비어 있는가?
 	{
-		printf("\n    Stack underflow.");
+		printf("\n    Queue underflow.");
 		return -1;
 	}
 
-	t = head->next;
-	i = t->key;
-	head->next = t->next;
-	free(t);
-
+	i = queue[front];
+	front = ++front % MAX;
 	return i;
 }
 
-void print_stack(void)
+void print_queue(void)
 {
-	node *t;
-	t = head->next;
-	printf("\n Stack contents : Top ---> Bottom\n");
-	while( t != tail)
+	int i;
+	printf("\n Queue contents : Front ---> Rear\n");
+	for(i = front; i != rear ; i == (++i % MAX)) // 주의 !!!
 	{
-		printf("%-6d", t->key);
-		t = t->next;
+		printf("%-6d", queue[i]);
 	}
 }
 
 int main(void)
 {
 	int i;
-	init_stack();
+	int_queue();
 
-	printf("\nPush 5,4,7,8,2,1");
-	push(5);
-	push(4);
-	push(7);
-	push(8);
-	push(2);
-	push(1);
-	print_stack();
+	printf("\nPut 5, 4, 7, 8, 2, 1");
+	put(5);
+	put(4);
+	put(7);
+	put(8);
+	put(2);
+	put(1);
+	print_queue();
 
-	printf("\nPop");
-	i = pop();
-	print_stack();
-	printf("\n  Popping value is %d", i);
+	printf("\nGet");
+	i = get();
+	print_queue();
+	printf("\n  Getting value is %d", i);
 
-	printf("\nPush 3,2,5,7,2");
-	push(3);
-	push(2);
-	push(5);
-	push(7);
-	push(2);
-	print_stack();
+//	printf("\nPut 3, 2, 5, 7");
+	printf("\nPut 3, 2, 5");
+	put(3);
+	put(2);
+	put(5);
+//	put(7);
+	print_queue();
 
-	printf("\nPush 3");
-	push(3);
-	print_stack();
+	printf("\nNow queue is full, put 3");
+	put(3);
+	print_queue();
 
-	printf("\nInitialize stack");
-	clear_stack();
-	print_stack();
-
-	printf("\nNow stack is empty, pop");
-	i = pop();
-	print_stack();
-	printf("\n  popping value is %d", i);
 
 	return 0;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
